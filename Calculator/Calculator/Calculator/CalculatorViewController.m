@@ -12,6 +12,7 @@
 @interface CalculatorViewController()
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
 @property (nonatomic, strong) CalculatorBrain *brain;
+@property (nonatomic, strong) NSMutableArray *periodPressed;
 @end
 
 @implementation CalculatorViewController
@@ -19,6 +20,7 @@
 @synthesize display = _display;
 @synthesize userIsInTheMiddleOfEnteringANumber = _userIsInTheMiddleOfEnteringANumber;
 @synthesize brain = _brain;
+@synthesize periodPressed = _periodPressed;
 
 - (CalculatorBrain *) brain
 {
@@ -26,13 +28,31 @@
     return _brain;
 }
 
+- (NSMutableArray *) periodPressed
+{
+    if(_periodPressed == nil)_periodPressed = [[NSMutableArray alloc] init];
+    return _periodPressed;
+}
+
 - (IBAction)digitPressed:(UIButton *)sender 
 {
     NSString *digit = [sender currentTitle];
+    
     if(self.userIsInTheMiddleOfEnteringANumber) {
-     self.display.text = [self.display.text stringByAppendingString:digit];   
+        if([digit isEqualToString:@"."]) {
+            [self.periodPressed addObject:digit];
+            if([self.periodPressed count] == 1) {
+                self.display.text = [self.display.text stringByAppendingString:digit];  
+            }
+        } else {
+            self.display.text = [self.display.text stringByAppendingString:digit];  
+        }
+        
     }
     else {
+        if([digit isEqualToString:@"."]) {
+            [self.periodPressed addObject:digit];
+        }
         self.display.text = digit;
         self.userIsInTheMiddleOfEnteringANumber = YES;
     }
@@ -44,6 +64,7 @@
 {
     [self.brain pushOperand:[self.display.text doubleValue]];
     self.userIsInTheMiddleOfEnteringANumber = NO;
+    [self.periodPressed removeAllObjects];
 }
 
 - (IBAction)operationPressed:(UIButton *)sender 
