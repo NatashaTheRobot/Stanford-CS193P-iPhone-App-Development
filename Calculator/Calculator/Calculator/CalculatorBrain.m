@@ -62,9 +62,7 @@
         result = M_PI;
     } else if([operation isEqualToString:@"log"]) {
         result = log([self popOperand]);
-    } else if ([operation isEqualToString:@"+ / -"]) {
-        result = -1 * [self popOperand]; 
-    }
+    } 
     
     
     [self pushOperand:result];
